@@ -58,15 +58,18 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     // Static fallback CSP. `src/middleware.ts` replaces this header
     // (with the per-request nonce interpolated) for every non-static
-    // response. Next.js's auto-nonced inline scripts rely on
-    // `'strict-dynamic'` + the runtime nonce, which we provide.
+    // response.
+    //
+    // SECURITY NOTE: 'strict-dynamic' is intentionally omitted:
+    // Next.js App Router loads internal chunks from _next/static/ and
+    // generates inline scripts. With 'strict-dynamic', the browser ignores
+    // 'self' and breaks Next.js script loading. Using nonce + unsafe-inline
+    // maintains security while allowing Next.js to function properly.
     value: [
       "default-src 'self'",
       // `'nonce-{NONCE}'` is the LITERAL PLACEHOLDER that middleware
-      // swaps out at request time. For Next.js's own auto-nonc'ed
-      // scripts, `strict-dynamic` allows the nonced loader to pull in
-      // its dynamic imports.
-      "script-src 'self' 'strict-dynamic'",
+      // swaps out at request time.
+      "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",     // Tailwind ships inline <style> in dev
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
@@ -90,10 +93,7 @@ const nextConfig: NextConfig = {
     ],
     //
     // `images.loaderFile` is intentionally NOT set: the custom
-    // loader in `src/lib/media/image-loader.ts` is marked
-    // `server-only` (so it cannot leak to the client), and Next
-    // loads `loaderFile` in a context where the `server-only` guard
-    // fires — failing the build. The loader is therefore applied
+    // loader in `src/lib/media/image-loader.ts` is applied
     // per-component via the `loader` prop on `<SafeImage>` (see
     // `src/components/media/safe-image.tsx`). Every public `<Image>`
     // in the site goes through `<SafeImage>`, so coverage is 100%

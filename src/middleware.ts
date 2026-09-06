@@ -44,9 +44,16 @@ export function middleware(request: NextRequest) {
   // mirrors next.config.ts; this middleware overrides it because the
   // header value cannot contain a per-request nonce when authored
   // statically.
+  //
+  // SECURITY NOTE: 'strict-dynamic' is intentionally omitted because:
+  // 1. Next.js App Router loads internal chunks from _next/static/
+  // 2. With 'strict-dynamic', the browser ignores 'self' and host allowlisting
+  // 3. All legitimate scripts are same-origin, so strict-dynamic adds no value
+  //    but breaks script loading
+  // We use 'unsafe-inline' to allow Next.js's auto-generated scripts.
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "script-src 'self' 'unsafe-inline'",
     "style-src 'self' 'unsafe-inline'",        // Tailwind ships inline <style> in dev
     "img-src 'self' data: blob:",
     "font-src 'self' data:",

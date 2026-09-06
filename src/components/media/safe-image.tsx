@@ -1,3 +1,5 @@
+"use client";
+
 import Image, { type ImageProps } from "next/image";
 import imageLoader from "@/src/lib/media/image-loader";
 
@@ -14,12 +16,9 @@ import imageLoader from "@/src/lib/media/image-loader";
  *      we render a placeholder `<div>` with the alt text inside,
  *      instead of crashing `<Image>` on an empty src.
  *
- * The component is a thin Server Component — the loader is
- * `server-only`, so SafeImage must only be used from server-side
- * renderers. Every existing `<Image>` in the marketing site
- * already lives in a Server Component (hero, product-grid,
- * news-list, news-article), so this just centralises the loader
- * config in one place.
+ * The component is a Client Component so it can pass the custom
+ * loader function to next/image's Image component (which is also
+ * a Client Component).
  *
  * Props mirror `next/image`'s public surface, minus the
  * `loader`/`quality` plumbing (we own those).

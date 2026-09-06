@@ -1,49 +1,28 @@
 import "server-only";
-
-/**
- * Auth guards — server-only helpers that gate Server Actions and
- * protected server components on role.
- *
- * Contract:
- *   - Reads the active session via next-auth `auth()`.
- *   - Resolves the `User` record from DB to get `role`.
- *   - Throws `Response(403)` (or `Error('forbidden')`)
- *     if the resolved role is not in `role`.
- *   - Returns a `SessionUser` so the caller can log the actor.
- */
+import { auth } from "@/src/lib/auth/auth";
+import { prisma } from "@/src/lib/db/prisma";
 
 export type Role = "EDITOR" | "PUBLISHER" | "ADMIN";
 
 export interface SessionUser {
   id: string;
   email: string;
+  name?: string;
   role: Role;
-  lastSeen: Date;
 }
 
-const DEV_SESSION_USER: SessionUser = {
-  id: "dev-user",
-  email: "dev@ebi.local",
-  role: "ADMIN",
-  lastSeen: new Date(0),
-};
-
-/**
- * Asserts the active session has one of the given roles. Throws on
- * failure.
- */
-export async function requireRole(role: Role | Role[]): Promise<SessionUser> {
-  const allowed = Array.isArray(role) ? role : [role];
-  if (!allowed.includes(DEV_SESSION_USER.role)) {
-    throw new Error("forbidden");
-  }
-  return DEV_SESSION_USER;
-}
-
-/**
- * Returns the session user without throwing. Useful for conditional UI.
- * Stub: returns the dev session.
- */
 export async function getOptionalSession(): Promise<SessionUser | null> {
-  return DEV_SESSION_USER;
+  const session = await auth();
+  const id = session?.user?.id;
+  if (!id) return null;
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) return null; // deleted/disabled after the token was issued
+  return { id: user.id, email: user.email, name: user.name ?? undefined, role: user.role };
+}
+
+export async function requireRole(role: Role | Role[]): Promise<SessionUser> {
+  const user = await getOptionalSession();
+  const allowed = Array.isArray(role) ? role : [role];
+  if (!user || !allowed.includes(user.role)) throw new Error("forbidden");
+  return user;
 }

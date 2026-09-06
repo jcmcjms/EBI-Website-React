@@ -10,6 +10,7 @@ import {
   BANK_INFO,
   BANK_SEARCH_ACTION,
 } from "@/src/lib/seo/bank-info";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -47,10 +48,15 @@ export const metadata: Metadata = {
  *   per the brand token map (globals.css).
  * - Skip-link target lives on `<main id="main-content">` (rendered by
  *   SiteShell) — the header emits `Skip to content` pointing here.
+ * - Admin routes (/admin/*) bypass SiteShell — they have their own chrome.
  */
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: LayoutProps<"/">) {
+  const h = await headers();
+  const { pathname } = { pathname: h.get("x-pathname") ?? "/" };
+  const bare = pathname.startsWith("/admin");
+
   return (
     <html
       lang="en"
@@ -64,7 +70,7 @@ export default function RootLayout({
             webSite({ ...BANK_INFO, potentialAction: BANK_SEARCH_ACTION }),
           ]}
         />
-        <SiteShell>{children}</SiteShell>
+        {bare ? children : <SiteShell>{children}</SiteShell>}
       </body>
     </html>
   );

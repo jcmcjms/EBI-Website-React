@@ -1,5 +1,3 @@
-import "server-only";
-
 /**
  * Custom `next/image` loader for Enterprise Bank Inc.
  *
@@ -25,19 +23,14 @@ import "server-only";
  * prop is wired up in `src/components/media/safe-image.tsx` so
  * callers don't have to remember to pass it.
  *
- * Server-only: the loader runs on the server during RSC rendering,
- * so importing this file into a `"use client"` component will fail
- * the build (which is what we want — leaking loader config to the
- * client is a footgun).
- *
  * `MEDIA_BASE_URL` is read from `process.env` at call time, NOT at
  * module load — this lets tests (and `vitest`) flip the env var
  * between cases.
  *
- * The function is marked `"use server"` so it can be passed across
- * the RSC boundary as a prop to the Client Component that
- * `next/image` is. Without that directive, React refuses to
- * serialise the function into the client payload.
+ * NOTE: This module is used by SafeImage which is a Client Component.
+ * The loader function runs on the client when processing image URLs.
+ * In production, MEDIA_BASE_URL is safe to expose to the client as
+ * it's just a CDN URL prefix.
  */
 
 export interface ImageLoaderArgs {
@@ -58,15 +51,14 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
  *   - `/media/...` in production with `MEDIA_BASE_URL` set →
  *     prefix with the IIS static vdir.
  *   - everything else (dev, or no `MEDIA_BASE_URL`) → return as-is;
- *     `next/image`'s built-in optimiser takes over.
+ *     `next/image`'s built-in optimiser can take over.
  *
- * Marked `"use server"` so React serialises the reference (rather
- * than the body) when the loader is passed as a prop to a Client
- * Component (`<Image>`). Without this directive, the build fails
- * with "Functions cannot be passed directly to Client Components".
+ * NOTE: This function is synchronous. `next/image`'s `loader` prop
+ * requires a `(args: ImageLoaderProps) => string` signature — returning
+ * a `Promise` would cause the Promise object itself to be stringified
+ * as `[object Promise]` and appear in srcset attributes.
  */
-async function imageLoader(args: ImageLoaderArgs): Promise<string> {
-  "use server";
+function imageLoader(args: ImageLoaderArgs): string {
   const { src } = args;
   // Absolute URL — the browser can fetch it directly.
   if (/^https?:\/\//i.test(src)) {
