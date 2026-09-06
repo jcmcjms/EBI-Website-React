@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { SiteShell } from "@/src/components/site/site-shell";
+import { ShellSwitch } from "@/src/components/site/shell-switch";
 import { JsonLd } from "@/src/components/seo/json-ld";
 import {
   financialOrganization,
@@ -10,7 +10,6 @@ import {
   BANK_INFO,
   BANK_SEARCH_ACTION,
 } from "@/src/lib/seo/bank-info";
-import { headers } from "next/headers";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Root layout — wires fonts, JSON-LD, and delegates chrome to <SiteShell>.
+ * Root layout — wires fonts, JSON-LD, and delegates chrome to <ShellSwitch>.
  *
  * JSON-LD blobs:
  *   - `financialOrganization` — `FinancialService` describing the bank
@@ -48,15 +47,13 @@ export const metadata: Metadata = {
  *   per the brand token map (globals.css).
  * - Skip-link target lives on `<main id="main-content">` (rendered by
  *   SiteShell) — the header emits `Skip to content` pointing here.
- * - Admin routes (/admin/*) bypass SiteShell — they have their own chrome.
+ * - Admin routes (/admin/*) bypass SiteShell via ShellSwitch — they have their own chrome.
  */
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: LayoutProps<"/">) {
-  const h = await headers();
-  const { pathname } = { pathname: h.get("x-pathname") ?? "/" };
-  const bare = pathname.startsWith("/admin");
-
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="en"
@@ -70,7 +67,7 @@ export default async function RootLayout({
             webSite({ ...BANK_INFO, potentialAction: BANK_SEARCH_ACTION }),
           ]}
         />
-        {bare ? children : <SiteShell>{children}</SiteShell>}
+        <ShellSwitch>{children}</ShellSwitch>
       </body>
     </html>
   );

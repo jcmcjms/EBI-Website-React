@@ -1,20 +1,40 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/src/components/admin/login-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { Toaster } from "@/src/components/ui/sonner";
 import { getOptionalSession } from "@/src/lib/auth/guards";
 
 export const metadata: Metadata = {
   title: "Admin sign in",
-  robots: { index: false, follow: false }, // belt-and-braces; middleware already sends X-Robots-Tag
+  robots: { index: false, follow: false },
 };
 
 const PASSWORD_HELP_URL =
-  process.env.NEXT_PUBLIC_PASSWORD_HELP_URL ?? "mailto:itsupport@enterprisebank.com.ph";
+  process.env.NEXT_PUBLIC_PASSWORD_HELP_URL ??
+  "mailto:itsupport@enterprisebank.com.ph";
 
 export default async function AdminLoginPage() {
-  if (await getOptionalSession()) redirect("/admin");
+  let hasSession = false;
+  let configError: string | null = null;
+
+  try {
+    hasSession = (await getOptionalSession()) !== null;
+  } catch (err) {
+    // Missing AUTH_SECRET / DB unreachable: render a visible card, not a blank hole.
+    configError =
+      process.env.NODE_ENV === "production"
+        ? "Authentication is unavailable. Contact IT support."
+        : `Auth config error: ${err instanceof Error ? err.message : String(err)}`;
+  }
+
+  if (hasSession) redirect("/admin");
 
   return (
     <main className="grid min-h-svh place-items-center bg-brand-surface-muted p-6">
@@ -22,19 +42,29 @@ export default async function AdminLoginPage() {
       <div className="w-full max-w-md">
         <div className="mb-6 text-center">
           <p className="text-lg font-bold text-brand-heading">Enterprise Bank</p>
-          <p className="text-xs font-medium tracking-[0.2em] text-brand-secondary">EST. 1995</p>
+          <p className="text-xs font-medium tracking-[0.2em] text-brand-secondary">
+            EST. 1995
+          </p>
         </div>
+
+        {configError && (
+          <Card className="mb-4 ring-destructive/40">
+            <CardHeader>
+              <CardTitle className="text-base">Sign-in unavailable</CardTitle>
+              <CardDescription>{configError}</CardDescription>
+            </CardHeader>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>
             <CardTitle className="text-xl">Login to your account</CardTitle>
-            <CardDescription>Enter your email below to login to your account</CardDescription>
+            <CardDescription>
+              Enter your email below to login to your account
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm
-              ssoEnabled={Boolean(process.env.AUTH_ENTRA_ID)}
-              helpUrl={PASSWORD_HELP_URL}
-            />
+            <LoginForm ssoEnabled={Boolean(process.env.AUTH_ENTRA_ID)} helpUrl={PASSWORD_HELP_URL} />
           </CardContent>
           <div className="border-t border-brand-border px-6 py-4 text-center text-sm text-muted-foreground">
             Need access? Contact your administrator.
