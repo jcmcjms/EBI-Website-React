@@ -36,9 +36,9 @@ export function QuickLinksSection({ data }: QuickLinksSectionProps): JSX.Element
           <li key={`${link.label}-${link.href}`}>
             <Link
               href={link.href}
-              className="group flex h-full flex-col items-start gap-4 rounded-xl border border-brand-border bg-brand-surface p-5 transition hover:-translate-y-0.5 hover:border-brand-primary hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="group flex h-full flex-col items-start gap-4 rounded-none border border-brand-border bg-brand-surface p-5 transition hover:-translate-y-0.5 hover:border-brand-primary hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-brand-surface-muted text-brand-primary transition group-hover:bg-brand-primary group-hover:text-brand-primary-foreground">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-none bg-brand-surface-muted text-brand-primary transition group-hover:bg-brand-primary group-hover:text-brand-primary-foreground">
                 <IconByName name={link.icon} size={22} weight="regular" aria-hidden />
               </span>
               <span className="text-base font-medium text-brand-heading">

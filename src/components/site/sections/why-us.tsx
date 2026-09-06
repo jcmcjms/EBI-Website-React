@@ -33,8 +33,8 @@ export function WhyUsSection({ data }: WhyUsSectionProps): JSX.Element {
       <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {data.reasons.map((reason) => (
           <li key={`${reason.title}-${reason.icon ?? "icon"}`}>
-            <article className="flex h-full flex-col gap-4 rounded-xl border border-brand-border bg-brand-surface p-6">
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-brand-accent text-brand-accent-foreground">
+            <article className="flex h-full flex-col gap-4 rounded-none border border-brand-border bg-brand-surface p-6">
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-none bg-brand-accent text-brand-accent-foreground">
                 <IconByName name={reason.icon} size={22} weight="regular" aria-hidden />
               </span>
               <h3 className="h-subsection text-brand-heading">

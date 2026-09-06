@@ -96,7 +96,7 @@ export function SiteHeader({
     >
       <a
         href="#main-content"
-        className="sr-only-ebi focus:not-sr-only-ebi focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-brand-primary focus:px-3 focus:py-1.5 focus:text-brand-primary-foreground"
+        className="sr-only-ebi focus:not-sr-only-ebi focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded-none focus:bg-brand-primary focus:px-3 focus:py-1.5 focus:text-brand-primary-foreground"
       >
         Skip to content
       </a>
@@ -106,21 +106,14 @@ export function SiteHeader({
         <Link
           href="/"
           aria-label={`${logoAlt} — home`}
-          className="flex shrink-0 items-center gap-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex shrink-0 items-center gap-3 rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          {logoSrc ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={logoSrc} alt={logoAlt} className="h-7 w-auto" />
-          ) : (
-            <span className="flex flex-col leading-tight">
-              <span className="font-heading text-lg font-semibold text-brand-heading">
-                Enterprise Bank
-              </span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.18em] text-brand-secondary">
-                Est. 1995
-              </span>
-            </span>
-          )}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={logoSrc ?? "/enterprise_bank-logo.png"}
+            alt={logoAlt}
+            className="h-7 w-auto"
+          />
         </Link>
 
         {/* Desktop primary nav */}
@@ -168,7 +161,7 @@ function DesktopNavLink({ item }: { item: NavItem }) {
     return (
       <Link
         href={item.href}
-        className="rounded-sm px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="rounded-none px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {item.label}
       </Link>
@@ -178,7 +171,7 @@ function DesktopNavLink({ item }: { item: NavItem }) {
     <div className="group relative">
       <Link
         href={item.href}
-        className="flex items-center gap-1 rounded-sm px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="flex items-center gap-1 rounded-none px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         aria-haspopup="true"
       >
         {item.label}
@@ -188,14 +181,14 @@ function DesktopNavLink({ item }: { item: NavItem }) {
       </Link>
       <div
         role="menu"
-        className="invisible absolute left-0 top-full z-50 min-w-48 rounded-md border border-brand-border bg-brand-surface p-1 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
+        className="invisible absolute left-0 top-full z-50 min-w-48 rounded-none border border-brand-border bg-brand-surface p-1 opacity-0 shadow-lg transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
       >
         {item.children!.map((child) => (
           <Link
             key={child.href}
             href={child.href}
             role="menuitem"
-            className="block rounded-sm px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="block rounded-none px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             {child.label}
           </Link>

@@ -147,7 +147,7 @@ export default async function NewsArticlePage({
       </header>
 
       {cover && (
-        <figure className="relative mt-10 aspect-[16/9] overflow-hidden rounded-2xl border border-brand-border">
+        <figure className="relative mt-10 aspect-[16/9] overflow-hidden rounded-none border border-brand-border">
           <SafeImage
             src={cover.url}
             alt={cover.alt}

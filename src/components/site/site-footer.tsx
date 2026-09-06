@@ -162,7 +162,7 @@ export function SiteFooter({ columns, regulatory }: SiteFooterProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-brand-border bg-brand-surface text-brand-body transition hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-none border border-brand-border bg-brand-surface text-brand-body transition hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <Icon weight="regular" size={18} aria-hidden />
               </a>

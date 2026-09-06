@@ -99,7 +99,7 @@ export default async function NewsListingPage({
             const cover = article.coverId ? covers.get(article.coverId) : null;
             return (
               <li key={article.id}>
-                <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-brand-border bg-brand-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <article className="group flex h-full flex-col overflow-hidden rounded-none border border-brand-border bg-brand-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                   {cover && (
                     <div className="relative aspect-[16/9] overflow-hidden">
                       <Image
@@ -148,7 +148,7 @@ export default async function NewsListingPage({
         {cursor && (
           <Link
             href="/news"
-            className="inline-flex items-center gap-1.5 rounded-md border border-brand-border bg-brand-surface px-4 py-2 text-sm font-medium text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex items-center gap-1.5 rounded-none border border-brand-border bg-brand-surface px-4 py-2 text-sm font-medium text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <ArrowLeft weight="bold" size={16} aria-hidden />
             Newest posts
@@ -157,7 +157,7 @@ export default async function NewsListingPage({
         {nextCursor && (
           <Link
             href={`/news?cursor=${encodeCursor(nextCursor)}`}
-            className="inline-flex items-center gap-1.5 rounded-md border border-brand-border bg-brand-surface px-4 py-2 text-sm font-medium text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="inline-flex items-center gap-1.5 rounded-none border border-brand-border bg-brand-surface px-4 py-2 text-sm font-medium text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             Older posts
             <ArrowRight weight="bold" size={16} aria-hidden />

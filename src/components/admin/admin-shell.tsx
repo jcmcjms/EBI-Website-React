@@ -79,7 +79,7 @@ export function AdminShell({
           className="h-5 w-px bg-brand-border"
         />
         <span className="t-meta">{user.name ?? user.email}</span>
-        <span className="rounded-sm border border-brand-border bg-brand-surface-muted px-1.5 py-0.5 text-xs font-medium uppercase tracking-wide text-brand-body">
+        <span className="rounded-none border border-brand-border bg-brand-surface-muted px-1.5 py-0.5 text-xs font-medium uppercase tracking-wide text-brand-body">
           {user.role}
         </span>
         <div className="ml-auto flex items-center gap-2">{topbarSlot}</div>
@@ -95,7 +95,7 @@ export function AdminShell({
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-sm px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="rounded-none px-3 py-2 text-sm text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {item.label}
               </Link>

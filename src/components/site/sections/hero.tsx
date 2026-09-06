@@ -81,7 +81,7 @@ export async function HeroSection({ data }: HeroSectionProps): Promise<JSX.Eleme
 
         {/* Visual column — only renders when a background image is set */}
         {background && (
-          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-2xl border border-brand-border shadow-sm lg:block">
+          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-none border border-brand-border shadow-sm lg:block">
             <SafeImage
               src={background.url}
               alt={background.alt}

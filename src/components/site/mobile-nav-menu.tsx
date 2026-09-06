@@ -56,7 +56,7 @@ export function MobileNavMenu({
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="rounded-sm px-3 py-3 text-base text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="rounded-none px-3 py-3 text-base text-brand-body hover:bg-brand-surface-muted hover:text-brand-heading focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               {item.label}
             </Link>

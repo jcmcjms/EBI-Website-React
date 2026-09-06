@@ -53,7 +53,7 @@ export async function ProductGridSection({
               : null;
             return (
               <li key={`${product.title}-${product.href}`}>
-                <article className="flex h-full flex-col overflow-hidden rounded-xl border border-brand-border bg-brand-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                <article className="flex h-full flex-col overflow-hidden rounded-none border border-brand-border bg-brand-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                   {image && (
                     <div className="relative aspect-[3/2] overflow-hidden">
                       <SafeImage

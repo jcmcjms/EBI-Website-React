@@ -62,7 +62,7 @@ export async function NewsListSection({
                 : null;
               return (
                 <li key={article.id}>
-                  <article className="group flex h-full flex-col overflow-hidden rounded-xl border border-brand-border bg-brand-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                  <article className="group flex h-full flex-col overflow-hidden rounded-none border border-brand-border bg-brand-surface shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                     {cover && (
                       <div className="relative aspect-[16/9] overflow-hidden">
                         <SafeImage
