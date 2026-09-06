@@ -1,0 +1,185 @@
+// =====================================================================
+// EBI Website — Prisma schema (PRODUCTION / SQL Server 2019).
+//
+// This file mirrors `schema.prisma` exactly except for the datasource
+// provider. To build for production:
+//   cp prisma/schema.production.prisma prisma/schema.prisma
+//   npx prisma migrate deploy
+// =====================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+// ------------------------------------------------------------------------
+// Enums (SQL Server supports real enum types).
+// ------------------------------------------------------------------------
+
+enum UserRole {
+  EDITOR
+  PUBLISHER
+  ADMIN
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum NewsStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum MediaFormat {
+  WEBP
+  AVIF
+  JPEG
+}
+
+// ------------------------------------------------------------------------
+// User
+// ------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String?  @db.NVarChar(Max)
+  role         UserRole @default(EDITOR)
+  mfaSecret    String?  @db.NVarChar(Max)
+
+  createdAt    DateTime @default(now())
+
+  authoredPages   Page[]          @relation("PageAuthor")
+  updatedSections Section[]       @relation("SectionUpdater")
+  uploadedMedia   MediaAsset[]    @relation("MediaUploader")
+  newsArticles    NewsArticle[]   @relation("NewsAuthor")
+  auditLogs       AuditLog[]      @relation("AuditActor")
+}
+
+// ------------------------------------------------------------------------
+// Page
+// ------------------------------------------------------------------------
+
+model Page {
+  id              String     @id @default(cuid())
+  slug            String     @unique
+  seoTitle        String     @db.NVarChar(Max)
+  metaDescription String     @db.NVarChar(Max)
+  ogImageId       String?
+  ogImage         MediaAsset? @relation("PageOgImage", fields: [ogImageId], references: [id])
+  status          PageStatus @default(DRAFT)
+  sections        Section[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  authorId        String?
+  author          User?      @relation("PageAuthor", fields: [authorId], references: [id])
+
+  @@index([status])
+}
+
+// ------------------------------------------------------------------------
+// Section
+// ------------------------------------------------------------------------
+
+model Section {
+  id          String   @id @default(cuid())
+  pageId      String
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  key         String   @db.NVarChar(64)
+  sort        Int      @default(0)
+  draft       String   @db.NVarChar(Max)
+  published   String?  @db.NVarChar(Max)
+  updatedAt   DateTime @updatedAt
+  updatedById String?
+  updatedBy   User?    @relation("SectionUpdater", fields: [updatedById], references: [id])
+
+  @@unique([pageId, key])
+  @@index([pageId, sort])
+}
+
+// ------------------------------------------------------------------------
+// MediaAsset
+// ------------------------------------------------------------------------
+
+model MediaAsset {
+  id           String         @id @default(cuid())
+  storageKey   String         @unique
+  mimeType     String         @db.NVarChar(64)
+  width        Int
+  height       Int
+  sizeBytes    Int
+  altText      String         @db.NVarChar(Max)
+  uploadedById String
+  uploadedBy   User           @relation("MediaUploader", fields: [uploadedById], references: [id])
+  createdAt    DateTime       @default(now())
+
+  variants     MediaVariant[]
+  usedByPages  Page[]         @relation("PageOgImage")
+  usedByNews   NewsArticle[]  @relation("NewsCover")
+
+  @@index([uploadedById])
+}
+
+model MediaVariant {
+  id           String      @id @default(cuid())
+  mediaAssetId String
+  mediaAsset   MediaAsset  @relation(fields: [mediaAssetId], references: [id], onDelete: Cascade)
+  format       MediaFormat
+  width        Int
+  height       Int
+  sizeBytes    Int
+  storageKey   String      @db.NVarChar(Max)
+
+  @@index([mediaAssetId])
+}
+
+// ------------------------------------------------------------------------
+// NewsArticle
+// ------------------------------------------------------------------------
+
+model NewsArticle {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String      @db.NVarChar(Max)
+  excerpt     String      @db.NVarChar(Max)
+  body        String      @db.NVarChar(Max)
+  coverId     String?
+  cover       MediaAsset? @relation("NewsCover", fields: [coverId], references: [id])
+  status      NewsStatus  @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  authorId    String
+  author      User        @relation("NewsAuthor", fields: [authorId], references: [id])
+
+  @@index([status, publishedAt])
+}
+
+// ------------------------------------------------------------------------
+// AuditLog
+// ------------------------------------------------------------------------
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation("AuditActor", fields: [userId], references: [id])
+  action     String   @db.NVarChar(64)
+  entityType String   @db.NVarChar(64)
+  entityId   String
+  before     String?  @db.NVarChar(Max)
+  after      String?  @db.NVarChar(Max)
+  at         DateTime @default(now())
+
+  @@index([at])
+  @@index([userId])
+  @@index([entityType, entityId])
+}

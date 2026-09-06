@@ -36,6 +36,20 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Prisma SQLite dev databases (relative to prisma/schema.prisma)
+prisma/dev.db
+prisma/dev.db-journal
+prisma/migrations/dev.db
+
+# Uploaded media (keep the directory + .gitkeep; ignore contents).
+# Match any immediate child of public/media that is NOT .gitkeep.
+/public/media/**
+!/public/media/.gitkeep
+
+# Local scripts scratch directory (used by scripts/generate-test-image.mjs)
+/tmp/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/project-tasks/
