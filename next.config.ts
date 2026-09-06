@@ -71,7 +71,7 @@ const securityHeaders = [
       // swaps out at request time.
       "script-src 'self' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",     // Tailwind ships inline <style> in dev
-      "img-src 'self' data: blob:",
+      "img-src 'self' data: blob: https://images.unsplash.com",
       "font-src 'self' data:",
       "connect-src 'self'",
       "frame-ancestors 'none'",
@@ -90,6 +90,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       // Placeholder — TASK-10 swaps in the real IIS media host.
       { protocol: "https", hostname: "media.ebi.local" },
+      // Unsplash — used by seed placeholders and editorial imagery.
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
     //
     // `images.loaderFile` is intentionally NOT set: the custom

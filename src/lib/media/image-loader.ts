@@ -59,10 +59,17 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
  * as `[object Promise]` and appear in srcset attributes.
  */
 function imageLoader(args: ImageLoaderArgs): string {
-  const { src } = args;
-  // Absolute URL — the browser can fetch it directly.
+  const { src, width, quality = 75 } = args;
+  // Absolute URL — append width/quality params for responsive images.
   if (/^https?:\/\//i.test(src)) {
-    return src;
+    try {
+      const url = new URL(src);
+      url.searchParams.set("w", String(width));
+      url.searchParams.set("q", String(quality));
+      return url.toString();
+    } catch {
+      return src;
+    }
   }
 
   // Same-origin `/media/...` reference. In production we want the

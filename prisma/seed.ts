@@ -81,10 +81,12 @@ async function main(): Promise<void> {
 
   console.log("[seed] creating placeholder MediaAssets…");
 
+  // Unsplash URLs used as placeholders — no local files needed in dev.
+  // Width/quality params are added by the image loader at render time.
   const placeholderAsset1 = await prisma.mediaAsset.create({
     data: {
-      storageKey: "seed/placeholder-1",
-      mimeType: "image/png",
+      storageKey: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&q=80",
+      mimeType: "image/jpeg",
       width: 1200,
       height: 630,
       sizeBytes: 0,
@@ -95,8 +97,8 @@ async function main(): Promise<void> {
 
   const placeholderAsset2 = await prisma.mediaAsset.create({
     data: {
-      storageKey: "seed/placeholder-2",
-      mimeType: "image/png",
+      storageKey: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=80",
+      mimeType: "image/jpeg",
       width: 600,
       height: 400,
       sizeBytes: 0,
